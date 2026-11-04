@@ -531,15 +531,18 @@ window, it is answered from the archive on the deploy host, where whoever owns
 What the trail is not
 =====================
 
-**It is append-only, not tamper-evident.** Entries are only ever added, and
-OSPREY never rewrites one; it removes them only by whole day, under the
-retention rule below. But there is no hash chain and no signature: anyone who
-can write the record's files or the archive can edit or delete entries ---
-the host's administrator included --- and nothing in a later read would show
-that they had. It is an operational record of what the deployment
-decided, which is what answers "what happened here". If you need something that
-holds against someone with write access, ship the archive's day files off the
-host as they are written, to a collector the deployment cannot reach back into.
+**It is append-only, not tamper-evident on the host.** Entries are only ever
+added, and OSPREY never rewrites one; it removes them only by whole day, under
+the retention rule below. Nothing on the host is signed: anyone who can write
+the record's files or the archive can edit or delete entries --- the host's
+administrator included --- and recompute what the archive holds. What the
+archive adds is each closed day's head, ``agent_record/day_head.json`` beside
+the day's export: the day's entries folded, in export order, into one SHA-256
+chained from the head of the day before (``osprey.agent_record.chain``). The
+trail is an operational record of what the deployment decided, which is what
+answers "what happened here". If you need something that holds against someone
+with write access, ship each head off the host as it is written, to a collector
+the deployment cannot reach back into.
 
 **The record keeps it for a window; the archive keeps it for good.** The
 record removes whole arrival days past ``agent_record.retention_days``, and

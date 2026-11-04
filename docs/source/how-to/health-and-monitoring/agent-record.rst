@@ -179,20 +179,25 @@ Read it
 
 Each day directory holds the files copied that day, under
 ``<kind>/<name>/<path>``, the record's export of that day, under
-``agent_record/entries.parquet``, and one ``MANIFEST.jsonl``. It is appended to
+``agent_record/entries.parquet``, the day's head beside it,
+``agent_record/day_head.json``, and one ``MANIFEST.jsonl``. It is appended to
 and never rewritten, with these kinds of line:
 
 - ``file`` — one copied or exported file: its ``source``, its ``path`` in the
   archive, its ``size`` and ``sha256``; the record's export file also carries
-  its ``day`` and ``rows``;
+  its ``day`` and ``rows``, and the day's head its ``day``;
 - ``agent_record_day`` — the record's export of that day is whole: its ``day``
   and ``rows``. It is the last line of the export, and a day with no entries
-  gets it with ``rows: 0`` and no file. A day without it is not exported, and
-  the next export writes that day again, over any file it left;
+  gets it with ``rows: 0``, a head and no export file. A day without it is not
+  exported, and the next export writes that day again, over any file it left;
 - ``agent_record_purged`` — the record's export of that day was purged; it
   clears the day's earlier ``agent_record_day`` lines;
 - ``pass`` — the last line of every archive-service pass: when it ran, how many
   files and bytes it copied, and any errors.
+
+The head is one JSON line: the day's entries folded, in export order, into one
+SHA-256 chained from the head of the day before (``osprey.agent_record.chain``).
+It is unsigned; :doc:`/reference/contracts/audit-trail` says where to ship it.
 
 Agent-record exports each UTC day once, after the day has closed, by arrival
 day. It runs when the service starts and daily, and catches up every closed day
