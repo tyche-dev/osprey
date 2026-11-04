@@ -245,11 +245,18 @@ is older than twice that.
 
    - the files copied that day, under ``<kind>/<name>/<path>``;
    - the record's export of that day, under ``agent_record/entries.parquet``;
+   - the day's head beside it, ``agent_record/day_head.json``;
    - one ``MANIFEST.jsonl``, appended to and never rewritten: a ``file`` line
      per copied or exported file (``source``, ``path``, ``size``, ``sha256``);
      ``agent_record_day`` when the day's export is whole (a day without it is
      exported again); ``agent_record_purged`` when it was purged; and a
      ``pass`` line closing every archive-service pass.
+
+   The head is one JSON line: the day's entries folded, in export order, into
+   one SHA-256 chained from the head of the day before
+   (``osprey.agent_record.chain``). A day with no entries gets a head and no
+   export file. The head is unsigned; :doc:`/reference/contracts/audit-trail`
+   says where to ship it.
 
    The archive service copies a file again only when its content changed. A
    second copy on the same day gets the pass time before its suffix, for
