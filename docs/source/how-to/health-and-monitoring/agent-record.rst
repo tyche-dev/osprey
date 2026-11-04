@@ -197,7 +197,8 @@ and never rewritten, with these kinds of line:
 
 The head is one JSON line: the day's entries folded, in export order, into one
 SHA-256 chained from the head of the day before (``osprey.agent_record.chain``).
-It is unsigned; :doc:`/reference/contracts/audit-trail` says where to ship it.
+It is unsigned; :doc:`/reference/contracts/audit-trail` says how a collector
+off the host seals it.
 
 Agent-record exports each UTC day once, after the day has closed, by arrival
 day. It runs when the service starts and daily, and catches up every closed day

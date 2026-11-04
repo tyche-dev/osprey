@@ -531,18 +531,32 @@ window, it is answered from the archive on the deploy host, where whoever owns
 What the trail is not
 =====================
 
-**It is append-only, not tamper-evident on the host.** Entries are only ever
-added, and OSPREY never rewrites one; it removes them only by whole day, under
-the retention rule below. Nothing on the host is signed: anyone who can write
-the record's files or the archive can edit or delete entries --- the host's
-administrator included --- and recompute what the archive holds. What the
-archive adds is each closed day's head, ``agent_record/day_head.json`` beside
-the day's export: the day's entries folded, in export order, into one SHA-256
-chained from the head of the day before (``osprey.agent_record.chain``). The
-trail is an operational record of what the deployment decided, which is what
-answers "what happened here". If you need something that holds against someone
-with write access, ship each head off the host as it is written, to a collector
-the deployment cannot reach back into.
+**It is append-only; a closed day is tamper-evident once it is sealed off the
+host.** Entries are only ever added, and OSPREY never rewrites one; it removes
+them only by whole day, under the retention rule below. Nothing on the host is
+signed: anyone who can write the record's files or the archive can edit or
+delete entries --- the host's administrator included --- and recompute what the
+archive holds. What the archive adds is each closed day's head,
+``agent_record/day_head.json`` beside the day's export: the day's entries
+folded, in export order, into one SHA-256 chained from the head of the day
+before (``osprey.agent_record.chain``). Ship each head off the host as it is
+written, to a collector the deployment cannot reach back into: the collector
+seals the first head it receives for a day and refuses a second, different one.
+A copy of the archive is then checked against the seals offline, and an entry
+edited, deleted or inserted in a sealed day, or a sealed day dropped, rejects
+that day:
+
+.. code-block:: bash
+
+   python -m osprey.agent_record.collector COLLECTOR seal DAY_HEAD_FILE...
+   python -m osprey.agent_record.verify ARCHIVE_COPY COLLECTOR/sealed --pub KEY
+
+The collector in OSPREY is a reference: it makes a test key on its first run,
+and a facility seals with a key it holds and manages itself. A day is open to
+change until its head is sealed --- the day itself, and the time until its head
+reaches the collector. Before that, and without a collector, the trail is an
+operational record of what the deployment decided, which is what answers "what
+happened here".
 
 **The record keeps it for a window; the archive keeps it for good.** The
 record removes whole arrival days past ``agent_record.retention_days``, and

@@ -206,6 +206,10 @@ dependencies = [
     # through dependabot so the adapter's contract tests gate them.
     "bluesky-queueserver-api==0.0.13",
     "duckdb>=1.5.4",
+    # agent-record's reference collector signs each day head with Ed25519 and its
+    # offline verifier checks those signatures. Declared explicitly rather than
+    # relied on as authlib's transitive dependency: both import it directly.
+    "cryptography>=46.0.5",
     # agent-record decodes OTLP logs itself (http/protobuf and http/json). The
     # range is the 1.x line of the locked opentelemetry-api/sdk, so the proto
     # messages and the SDK stay one release.
