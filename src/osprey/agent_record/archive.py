@@ -17,9 +17,9 @@ file. The day line is the only mark of an exported day (:func:`exported_days`);
 an ``agent_record_purged`` line clears it.
 
 The head is unsigned, and the host never signs it: a collector off the host
-seals it. The head of the day before is read from the archive; where the
-archive holds none (the first day, or a day exported before heads were
-written), the day starts from 32 zero bytes.
+seals it (:mod:`osprey.agent_record.collector`). The head of the day before is
+read from the archive; where the archive holds none (the first day, or a day
+exported before heads were written), the day starts from 32 zero bytes.
 
 The export writes through the archive service's
 :class:`~osprey.services.archive.run.ArchiveTree`: it holds the one archive

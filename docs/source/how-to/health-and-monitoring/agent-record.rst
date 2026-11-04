@@ -256,7 +256,7 @@ is older than twice that.
    one SHA-256 chained from the head of the day before
    (``osprey.agent_record.chain``). A day with no entries gets a head and no
    export file. The head is unsigned; :doc:`/reference/contracts/audit-trail`
-   says where to ship it.
+   says how a collector off the host seals it.
 
    The archive service copies a file again only when its content changed. A
    second copy on the same day gets the pass time before its suffix, for

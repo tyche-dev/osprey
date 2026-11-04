@@ -27,9 +27,10 @@ store them; ``(key, chunk_index)`` is unique, so the order is total.
 
 **Who signs.** Nobody here. The host writes each day's :class:`DayHead`
 unsigned beside the export (:data:`HEAD_FILE`); a collector off the host seals
-the first head it receives for a day, signing :func:`seal_message`, and a
-verifier recomputes every day from a copy of the archive and checks it
-against the seals.
+the first head it receives for a day (:mod:`osprey.agent_record.collector`),
+signing :func:`seal_message`; the verifier (:mod:`osprey.agent_record.verify`)
+recomputes every day from a copy of the archive and checks it against the
+seals.
 
 This module is standard library only and does no I/O.
 """
